@@ -3,10 +3,10 @@ const getConfig = require('./config');
 const { insertStocksData } = require('./queries');
 const symbols = [
   'MSFT',
-  'NFLX',
-  'AMZN',
-  'W',
-  'FB'
+  // 'NFLX',
+  // 'AMZN',
+  // 'W',
+  // 'FB'
 ];
 
 (function getStocksData() {
