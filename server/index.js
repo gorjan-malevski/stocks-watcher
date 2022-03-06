@@ -1,40 +1,42 @@
 const fetch = require('isomorphic-fetch');
 const getConfig = require('./config');
-const insertStocksData   = require('./queries.js')
+const { insertStocksData } = require('./queries');
 const symbols = [
-  'NFLX',
   'MSFT',
+  'NFLX',
   'AMZN',
   'W',
   'FB'
 ];
 
-(function getStocksData () {
+(function getStocksData() {
 
   const apiConfig = getConfig('apiHostOptions');
   const { host, timeSeriesFunction, interval, key } = apiConfig;
 
   symbols.forEach((symbol) => {
-    fetch(`${host}query/?function=${timeSeriesFunction}&symbol=${symbol}&interval=${interval}&apikey=${key}`)
-    .then((res) => res.json())
-    .then((data) => {
-     
-       console.log(data)
-      // Object.keys(timeSeries).map((key) => {
-      //   const dataPoint = timeSeries[key];
-      //   const payload = [
-      //     symbol,
-      //     dataPoint['2. high'],
-      //     dataPoint['3. low'],
-      //     dataPoint['1. open'],
-      //     dataPoint['4. close'],
-      //     dataPoint['5. volume'],
-      //     key,
-      //   ];
-      //   insertStocksData(payload);
-      // });
-    });
+    // fetch(`${host}query/?function=${timeSeriesFunction}&symbol=${symbol}&interval=${interval}&apikey=${key}`)
+    fetch('https://jsonkeeper.com/b/10UH')
+      .then((res) =>
+        res.json(), (err) => console.log(err))
+      .then((data) => {
+
+        const timeSeries = data['Time Series (5min)'];
+        Object.keys(timeSeries).map((key) => {
+          const dataPoint = timeSeries[key];
+          const payload = [
+            symbol,
+            dataPoint['2. high'],
+            dataPoint['3. low'],
+            dataPoint['1. open'],
+            dataPoint['4. close'],
+            dataPoint['5. volume'],
+            key,
+          ];
+          console.log(payload)
+          insertStocksData(payload);
+        });
+      });
   })
+
 })()
-
-
